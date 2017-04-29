@@ -1,4 +1,5 @@
 var gulp = require('gulp')
+var babel = require('gulp-babel')
 var webpack = require('webpack-stream')
 var connect = require("gulp-connect")
 
@@ -26,6 +27,12 @@ gulp.task('example', function() {
       },
     }))
     .pipe(gulp.dest('web'))
+})
+
+gulp.task('build', () => {
+  return gulp.src('src/**/*.js')
+    .pipe(babel())
+    .pipe(gulp.dest('npm'))
 })
 
 gulp.task('default', [

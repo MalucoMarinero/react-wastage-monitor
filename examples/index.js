@@ -4,7 +4,7 @@ import ReactWastageTester from '../src/index'
 
 import Root from './Root'
 
-ReactWastageTester()
+ReactWastageTester(React, ReactDOM)
 
 const container = document.getElementById('app-container')
 ReactDOM.render(React.createElement(Root, {}), container)
