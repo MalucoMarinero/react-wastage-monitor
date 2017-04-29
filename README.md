@@ -90,3 +90,7 @@ Sure thing, let us know in the issues and we'll see if it makes sense and is
 doable.
 
 
+## License
+Copyright (c) 2017 James Rakich, used under The MIT License (MIT)
+
+License provided in LICENSE.md
