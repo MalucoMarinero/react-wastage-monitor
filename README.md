@@ -20,15 +20,17 @@ npm install react-wastage-monitor
 
 ## Usage
 
-React Wastage Monitor attaches to React by importing it, making a component, and
+React Wastage Monitor attaches to React by making a component, and
 then using that opportunity to monkey patch React's CompositeComponent. This
 allows us to hook into every component as it goes through the Component
 Lifecycle to verify your prop and state usage. All you need to do is run this
 code early in your codebase before mounting the rest of the app:
 
 ```
+import React from 'react'
+import ReactDOM from 'react-dom'
 import ReactWastageMonitor from 'react-wastage-monitor'
-ReactWastageMonitor()
+ReactWastageMonitor(React, ReactDOM)
 ```
 
 Ideally you should always run this code in development so you're constantly kept
@@ -37,7 +39,7 @@ in production such as using environment variables and a minifier:
 
 ```
 if (process.env.NODE_ENV !== 'production') {
-  ReactWastageMonitor()
+  ReactWastageMonitor(React, ReactDOM)
 }
 ```
 
