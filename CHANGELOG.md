@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased Changes
 
+## [0.2.1] - 2017-05-02
+- document exclude option
+
 ## [0.2.0] - 2017-05-02
 ### Added
 - add exclude option that supports string match or regexs, to allow suppression
