@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom'
 import showChange from './showChange'
 import _ from 'lodash'
+import componentCheck from './componentCheck'
 
 export default function (proto, options) {
   const oldMethod = proto._performComponentUpdate
@@ -15,10 +16,11 @@ export default function (proto, options) {
     unmaskedContext,
   ) {
     const inst = this._instance
+    const {componentName, excluded} = componentCheck(inst, options)
     const node = ReactDOM.findDOMNode(this._instance)
     const prevProps = inst.props
     const prevState = inst.state
-    if (node) {
+    if (node && !excluded) {
       htmlHistory[this._debugID] = node.outerHTML
     }
 
@@ -29,14 +31,14 @@ export default function (proto, options) {
 
     if (
       node &&
+      !excluded &&
       (inst.shouldComponentUpdate || inst.constructor.prototype.isPureReactComponent)
     ) {
       transaction.getReactMountReady().enqueue(() => {
         const node = ReactDOM.findDOMNode(this._instance)
         if (htmlHistory[this._debugID] === node.outerHTML) {
           console.group(
-            (inst.constructor.displayName || inst.constructor.name) +
-            " props/state changed and updated but HTML didn't"
+            componentName + " props/state changed and updated but HTML didn't"
           )
           const keys = _.union(_.keys(prevProps), _.keys(nextProps));
           for (const key of keys) {

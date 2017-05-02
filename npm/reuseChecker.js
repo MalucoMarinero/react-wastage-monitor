@@ -9,6 +9,11 @@ exports.default = function (proto, options) {
 
   proto.updateComponent = function (transaction, prevParentElement, nextParentElement, prevUnmaskedContext, nextUnmaskedContext) {
     var inst = this._instance;
+
+    var _componentCheck = (0, _componentCheck3.default)(inst, options),
+        componentName = _componentCheck.componentName,
+        excluded = _componentCheck.excluded;
+
     var nextContext = void 0;
     var prevContext = inst.context;
 
@@ -23,25 +28,32 @@ exports.default = function (proto, options) {
     var nextProps = nextParentElement.props;
     var nextState = _lodash2.default.assign({}, prevState);
 
-    var oldSetState = inst.setState;
+    var parentName = 'TopLevel';
 
-    inst.constructor.prototype.setState = function (updates) {
-      _lodash2.default.assign(nextState, updates);
-    };
-
-    if (prevParentElement !== nextParentElement && inst.componentWillReceiveProps) {
-      inst.componentWillReceiveProps(nextProps, nextContext);
+    if (nextParentElement._owner) {
+      var parentInstance = nextParentElement._owner._instance;
+      parentName = parentInstance.constructor.displayName || parentInstance.constructor.name;
     }
 
-    inst.constructor.prototype.setState = oldSetState;
-    // not getting next state yet, it messes up react because it fetches new data
-    // const nextState = this._processPendingState(nextProps, nextContext)
+    var oldSetState = inst.setState;
 
-    if (inst.shouldComponentUpdate || inst.constructor.prototype.isPureReactComponent) {
+    if (!excluded) {
+      inst.constructor.prototype.setState = function (updates) {
+        _lodash2.default.assign(nextState, updates);
+      };
+
+      if (prevParentElement !== nextParentElement && inst.componentWillReceiveProps) {
+        inst.componentWillReceiveProps(nextProps, nextContext);
+      }
+
+      inst.constructor.prototype.setState = oldSetState;
+    }
+
+    if (!excluded && (inst.shouldComponentUpdate || inst.constructor.prototype.isPureReactComponent)) {
       var shouldUpdate = inst.shouldComponentUpdate ? inst.shouldComponentUpdate(nextProps, !inst.state ? inst.state : nextState, nextContext) : (0, _reactAddonsShallowCompare2.default)(inst, nextProps, !inst.state ? inst.state : nextState);
 
       if (shouldUpdate && _lodash2.default.isEqual(prevProps, nextProps) && _lodash2.default.isEqual(prevState, nextState)) {
-        console.group((inst.constructor.displayName || inst.constructor.name) + " updated when it shouldn't need to");
+        console.group(parentName + " > " + componentName + " updated when it shouldn't need to");
         var keys = _lodash2.default.union(_lodash2.default.keys(prevProps), _lodash2.default.keys(nextProps));
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -100,8 +112,8 @@ exports.default = function (proto, options) {
 
         console.groupEnd();
       }
-    } else {
-      console.log('%c' + (inst.constructor.displayName || inst.constructor.name), 'font-weight: bold;', "is impure and will ALWAYS update when a component above it does");
+    } else if (!excluded) {
+      console.log('%c' + componentName, 'font-weight: bold;', "is impure and will ALWAYS update when a component above it does");
     }
 
     var result = oldMethod.bind(this)(transaction, prevParentElement, nextParentElement, prevUnmaskedContext, nextUnmaskedContext);
@@ -125,5 +137,9 @@ var _lodash2 = _interopRequireDefault(_lodash);
 var _reactAddonsShallowCompare = require('react-addons-shallow-compare');
 
 var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
+
+var _componentCheck2 = require('./componentCheck');
+
+var _componentCheck3 = _interopRequireDefault(_componentCheck2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

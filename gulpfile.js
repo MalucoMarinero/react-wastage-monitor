@@ -43,6 +43,7 @@ gulp.task('default', [
 
   connect.server({
     root: 'web',
+    port: 8000,
     livereload: true
   })
 })

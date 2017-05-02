@@ -12,20 +12,25 @@ exports.default = function (proto, options) {
     var _this = this;
 
     var inst = this._instance;
+
+    var _componentCheck = (0, _componentCheck3.default)(inst, options),
+        componentName = _componentCheck.componentName,
+        excluded = _componentCheck.excluded;
+
     var node = _reactDom2.default.findDOMNode(this._instance);
     var prevProps = inst.props;
     var prevState = inst.state;
-    if (node) {
+    if (node && !excluded) {
       htmlHistory[this._debugID] = node.outerHTML;
     }
 
     var result = oldMethod.bind(this)(nextElement, nextProps, nextState, nextContext, transaction, unmaskedContext);
 
-    if (node && (inst.shouldComponentUpdate || inst.constructor.prototype.isPureReactComponent)) {
+    if (node && !excluded && (inst.shouldComponentUpdate || inst.constructor.prototype.isPureReactComponent)) {
       transaction.getReactMountReady().enqueue(function () {
         var node = _reactDom2.default.findDOMNode(_this._instance);
         if (htmlHistory[_this._debugID] === node.outerHTML) {
-          console.group((inst.constructor.displayName || inst.constructor.name) + " props/state changed and updated but HTML didn't");
+          console.group(componentName + " props/state changed and updated but HTML didn't");
           var keys = _lodash2.default.union(_lodash2.default.keys(prevProps), _lodash2.default.keys(nextProps));
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
@@ -105,5 +110,9 @@ var _showChange2 = _interopRequireDefault(_showChange);
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _componentCheck2 = require('./componentCheck');
+
+var _componentCheck3 = _interopRequireDefault(_componentCheck2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

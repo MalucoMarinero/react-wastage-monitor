@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom'
 import showChange from './showChange'
 import _ from 'lodash'
 import shallowCompare from 'react-addons-shallow-compare'
+import componentCheck from './componentCheck'
 
 export default function (proto, options) {
   const oldMethod = proto.updateComponent
@@ -12,6 +13,7 @@ export default function (proto, options) {
     nextUnmaskedContext
   ) {
     const inst = this._instance
+    const {componentName, excluded} = componentCheck(inst, options)
     let nextContext
     const prevContext = inst.context
 
@@ -26,21 +28,34 @@ export default function (proto, options) {
     const nextProps = nextParentElement.props
     const nextState = _.assign({}, prevState)
 
+    let parentName = 'TopLevel'
+
+    if (nextParentElement._owner) {
+      const parentInstance = nextParentElement._owner._instance
+      parentName = (
+        parentInstance.constructor.displayName || parentInstance.constructor.name
+      )
+    }
+
     const oldSetState = inst.setState;
 
-    inst.constructor.prototype.setState = (updates) => {
-      _.assign(nextState, updates)
-    }
-    
-    if (prevParentElement !== nextParentElement && inst.componentWillReceiveProps) {
-      inst.componentWillReceiveProps(nextProps, nextContext);
+    if (!excluded) {
+      inst.constructor.prototype.setState = (updates) => {
+        _.assign(nextState, updates)
+      }
+      
+      if (prevParentElement !== nextParentElement && inst.componentWillReceiveProps) {
+        inst.componentWillReceiveProps(nextProps, nextContext);
+      }
+
+      inst.constructor.prototype.setState = oldSetState;
     }
 
-    inst.constructor.prototype.setState = oldSetState;
-    // not getting next state yet, it messes up react because it fetches new data
-    // const nextState = this._processPendingState(nextProps, nextContext)
-
-    if (inst.shouldComponentUpdate || inst.constructor.prototype.isPureReactComponent) {
+    if (
+      !excluded &&
+      (inst.shouldComponentUpdate ||
+       inst.constructor.prototype.isPureReactComponent)
+    ) {
       const shouldUpdate = inst.shouldComponentUpdate
         ? inst.shouldComponentUpdate(
             nextProps, !inst.state ? inst.state : nextState, nextContext
@@ -53,8 +68,8 @@ export default function (proto, options) {
         _.isEqual(prevState, nextState)
       ) {
         console.group(
-          (inst.constructor.displayName || inst.constructor.name) +
-          " updated when it shouldn't need to"
+          parentName + " > " +
+          componentName + " updated when it shouldn't need to"
         )
         const keys = _.union(_.keys(prevProps), _.keys(nextProps));
         for (const key of keys) {
@@ -77,9 +92,9 @@ export default function (proto, options) {
         }
         console.groupEnd();
       }
-    } else {
+    } else if (!excluded) {
       console.log(
-        '%c' + (inst.constructor.displayName || inst.constructor.name),
+        '%c' + (componentName),
         'font-weight: bold;',
         "is impure and will ALWAYS update when a component above it does"
       )
