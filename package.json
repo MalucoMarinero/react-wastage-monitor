@@ -1,6 +1,6 @@
 {
   "name": "react-wastage-monitor",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "React Client Monitor that detects wasted rendering time on incorrectly developed Pure Components",
   "main": "npm/index.js",
   "scripts": {
@@ -20,13 +20,13 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-connect": "^5.0.0",
-    "react-addons-shallow-compare": "^15.5.2",
     "webpack": "^2.4.1",
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
     "lodash": "^4.17.4",
     "react": "^15.5.4",
+    "react-addons-shallow-compare": "^15.5.2",
     "react-dom": "^15.5.4"
   }
 }

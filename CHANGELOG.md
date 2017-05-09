@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased Changes
 
+## [0.2.2] - 2017-05-10
+- moved react-addons-shallow-compare from devDependencies to dependencies
+
 ## [0.2.1] - 2017-05-02
 - document exclude option
 
