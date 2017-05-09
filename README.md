@@ -80,7 +80,7 @@ they don't implement shouldComponentUpdate, will always update regardless of the
 equality of their props. This should be avoided wherever possible and will be
 brought to your attention when they rerender:
 
-```js
+```
 <Component> is impure and will ALWAYS update when a component above it does
 ```
 
@@ -91,7 +91,7 @@ will incorrectly believe it has new props, wasting render time. Components that
 render whilst having deeply equal changes will be brought to your attention
 along with what deeply equal yet referentially unequal values were found:
 
-```js
+```
 <ParentComponent> > <Component> updated when it shouldn't need to
   ref inequality:propName <fromValue> -> <toValue>
 ```
@@ -103,7 +103,7 @@ monitor will compare a component's HTML before and after an update, and if it's
 identical, will check to see what props/state have changed to trigger this
 re-render.
 
-```js
+```
 <Component> props/state changed and updated but the HTML didn't
   changed:onClick <fromValue> -> <toValue>
 ```
