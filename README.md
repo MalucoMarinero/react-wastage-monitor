@@ -81,7 +81,7 @@ equality of their props. This should be avoided wherever possible and will be
 brought to your attention when they rerender:
 
 ```
-<Component> is impure and will ALWAYS update when a component above it does
+<ParentComponent> > <Component> is impure and will ALWAYS update when a component above it does
 ```
 
 ### Components that return true on shouldComponentUpdate even when their props/state are deeply equal

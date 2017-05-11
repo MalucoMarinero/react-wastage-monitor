@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased Changes
 
+## [0.2.3] - 2017-05-11
+### Added
+- parent caller's name added to references of impure components
+
 ## [0.2.2] - 2017-05-10
 - moved react-addons-shallow-compare from devDependencies to dependencies
 

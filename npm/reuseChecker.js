@@ -113,7 +113,7 @@ exports.default = function (proto, options) {
         console.groupEnd();
       }
     } else if (!excluded) {
-      console.log('%c' + componentName, 'font-weight: bold;', "is impure and will ALWAYS update when a component above it does");
+      console.log('%c' + (parentName + " > " + componentName), 'font-weight: bold;', "is impure and will ALWAYS update when a component above it does");
     }
 
     var result = oldMethod.bind(this)(transaction, prevParentElement, nextParentElement, prevUnmaskedContext, nextUnmaskedContext);
